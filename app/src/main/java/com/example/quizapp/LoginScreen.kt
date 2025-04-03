@@ -26,6 +26,7 @@ import com.example.quizapp.viewmodel.LoginViewModel
 @Composable
 fun LoginScreen(
     onNavigateToRegister: () -> Unit,
+    onLoginSuccess: () -> Unit,
     viewModel: LoginViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -74,7 +75,11 @@ fun LoginScreen(
         }
 
         Button(
-            onClick = { viewModel.login() },
+            onClick = { 
+                viewModel.login()
+                // Başarılı giriş durumunda quiz ekranına yönlendir
+                onLoginSuccess()
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
