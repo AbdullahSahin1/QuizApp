@@ -21,12 +21,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.quizapp.viewmodel.LoginViewModel
+import com.example.quizapp.viewmodel.RegisterViewModel
 
 @Composable
-fun LoginScreen(
-    onNavigateToRegister: () -> Unit,
-    viewModel: LoginViewModel = viewModel()
+fun RegisterScreen(
+    onNavigateToLogin: () -> Unit,
+    viewModel: RegisterViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val error = uiState.error
@@ -42,6 +42,16 @@ fun LoginScreen(
             text = "Quiz Uygulaması",
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(bottom = 32.dp)
+        )
+
+        OutlinedTextField(
+            value = uiState.username,
+            onValueChange = { viewModel.updateUsername(it) },
+            label = { Text("Kullanıcı Adı") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            isError = error != null
         )
 
         OutlinedTextField(
@@ -61,6 +71,17 @@ fun LoginScreen(
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            isError = error != null
+        )
+
+        OutlinedTextField(
+            value = uiState.confirmPassword,
+            onValueChange = { viewModel.updateConfirmPassword(it) },
+            label = { Text("Şifre Tekrar") },
+            visualTransformation = PasswordVisualTransformation(),
+            modifier = Modifier
+                .fillMaxWidth()
                 .padding(bottom = 32.dp),
             isError = error != null
         )
@@ -74,7 +95,7 @@ fun LoginScreen(
         }
 
         Button(
-            onClick = { viewModel.login() },
+            onClick = { viewModel.register() },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
@@ -86,16 +107,16 @@ fun LoginScreen(
                     color = MaterialTheme.colorScheme.onPrimary
                 )
             } else {
-                Text("Giriş Yap")
+                Text("Kayıt Ol")
             }
         }
 
         TextButton(
-            onClick = onNavigateToRegister,
+            onClick = onNavigateToLogin,
             modifier = Modifier.padding(top = 16.dp),
             enabled = !uiState.isLoading
         ) {
-            Text("Hesabınız yok mu? Kayıt olun")
+            Text("Zaten hesabınız var mı? Giriş yapın")
         }
     }
 } 
