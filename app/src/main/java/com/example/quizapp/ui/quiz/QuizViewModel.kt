@@ -52,7 +52,7 @@ class QuizViewModel : ViewModel() {
                 Log.d("QuizViewModel", "API çağrısı başlatılıyor...")
                 Log.d("QuizViewModel", "RetrofitClient durumu: ${RetrofitClient.quizApiService}")
                 
-                val response = RetrofitClient.quizApiService.getQuestions(amount = 10)
+                val response = RetrofitClient.quizApiService.getQuestions(amount = 50)
                 Log.d("QuizViewModel", "API yanıtı alındı: ${response.results.size} soru")
                 Log.d("QuizViewModel", "API yanıt detayı: $response")
                 

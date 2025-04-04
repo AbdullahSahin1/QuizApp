@@ -8,7 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
-    private const val BASE_URL = "https://opentdb.com/"
+    private const val BASE_URL = "https://opentdb.com/api.php?amount=50"
     private const val TAG = "RetrofitClient"
 
     private val loggingInterceptor = HttpLoggingInterceptor { message ->
@@ -24,15 +24,30 @@ object RetrofitClient {
         .writeTimeout(60, TimeUnit.SECONDS)
         .build()
 
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(BASE_URL)
-        .client(okHttpClient)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
+    private val retrofit: Retrofit by lazy {
+        Log.d(TAG, "Retrofit instance oluşturuluyor...")
+        Log.d(TAG, "BASE_URL: $BASE_URL")
+        
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .also {
+                Log.d(TAG, "Retrofit instance başarıyla oluşturuldu")
+            }
+    }
 
-    val quizApiService: QuizApiService = retrofit.create(QuizApiService::class.java)
+    val quizApiService: QuizApiService by lazy {
+        Log.d(TAG, "QuizApiService oluşturuluyor...")
+        retrofit.create(QuizApiService::class.java).also {
+            Log.d(TAG, "QuizApiService başarıyla oluşturuldu")
+        }
+    }
     
     init {
-        Log.d(TAG, "RetrofitClient initialized with BASE_URL: $BASE_URL")
+        Log.d(TAG, "RetrofitClient initialized")
+        Log.d(TAG, "BASE_URL: $BASE_URL")
+        Log.d(TAG, "QuizApiService: $quizApiService")
     }
 } 

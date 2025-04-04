@@ -1,14 +1,18 @@
 package com.example.quizapp.api
 
+import android.util.Log
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface QuizApiService {
-    @GET("api.php")
+    @GET("https://opentdb.com/api.php?amount=50")
     suspend fun getQuestions(
-        @Query("amount") amount: Int = 10,
+        @Query("amount") amount: Int = 50,
         @Query("type") type: String = "multiple"
-    ): QuizResponse
+    ): QuizResponse {
+        Log.d("QuizApiService", "getQuestions çağrıldı: amount=$amount, type=$type")
+        return this.getQuestions(amount, type)
+    }
 }
 
 data class QuizResponse(
