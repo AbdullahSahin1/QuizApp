@@ -50,6 +50,7 @@ class QuizViewModel : ViewModel() {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             try {
                 Log.d("QuizViewModel", "API çağrısı başlatılıyor...")
+                Log.d("QuizViewModel", "RetrofitClient durumu: ${RetrofitClient.quizApiService}")
                 
                 val response = RetrofitClient.quizApiService.getQuestions(amount = 10)
                 Log.d("QuizViewModel", "API yanıtı alındı: ${response.results.size} soru")
@@ -65,6 +66,7 @@ class QuizViewModel : ViewModel() {
                 }
                 
                 val questions = response.results.map { apiQuestion ->
+                    Log.d("QuizViewModel", "Soru işleniyor: ${apiQuestion.question}")
                     QuizQuestion(
                         question = Html.fromHtml(apiQuestion.question, Html.FROM_HTML_MODE_COMPACT).toString(),
                         options = (apiQuestion.incorrect_answers + apiQuestion.correct_answer).shuffled()
@@ -80,6 +82,8 @@ class QuizViewModel : ViewModel() {
                 Log.d("QuizViewModel", "Sorular başarıyla yüklendi: ${questions.size} soru")
             } catch (e: Exception) {
                 Log.e("QuizViewModel", "Hata oluştu", e)
+                Log.e("QuizViewModel", "Hata detayı: ${e.message}")
+                Log.e("QuizViewModel", "Hata stack trace: ${e.stackTraceToString()}")
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
                     error = "Sorular yüklenirken bir hata oluştu: ${e.message}"
