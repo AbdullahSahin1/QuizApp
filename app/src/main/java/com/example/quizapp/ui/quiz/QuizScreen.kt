@@ -16,6 +16,7 @@ fun QuizScreen(
     viewModel: QuizViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val errorMessage = uiState.error
 
     Column(
         modifier = Modifier
@@ -28,9 +29,9 @@ fun QuizScreen(
             uiState.isLoading -> {
                 CircularProgressIndicator()
             }
-            uiState.error != null -> {
+            errorMessage != null -> {
                 Text(
-                    text = uiState.error,
+                    text = errorMessage,
                     color = MaterialTheme.colorScheme.error,
                     textAlign = TextAlign.Center
                 )
