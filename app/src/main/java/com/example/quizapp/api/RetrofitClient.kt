@@ -11,9 +11,7 @@ object RetrofitClient {
     private const val BASE_URL = "https://opentdb.com/"
     private const val TAG = "RetrofitClient"
 
-    private val loggingInterceptor = HttpLoggingInterceptor { message ->
-        Log.d(TAG, "API Response: $message")
-    }.apply {
+    private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
     }
 
@@ -33,6 +31,6 @@ object RetrofitClient {
     val quizApiService: QuizApiService = retrofit.create(QuizApiService::class.java)
     
     init {
-        Log.d(TAG, "RetrofitClient initialized with BASE_URL: $BASE_URL")
+        println("RetrofitClient initialized with base URL: $BASE_URL")
     }
 } 
