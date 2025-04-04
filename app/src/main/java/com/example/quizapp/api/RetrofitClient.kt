@@ -1,19 +1,27 @@
 package com.example.quizapp.api
 
+import android.util.Log
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
     private const val BASE_URL = "https://opentdb.com/"
+    private const val TAG = "RetrofitClient"
 
-    private val loggingInterceptor = HttpLoggingInterceptor().apply {
+    private val loggingInterceptor = HttpLoggingInterceptor { message ->
+        Log.d(TAG, "API Response: $message")
+    }.apply {
         level = HttpLoggingInterceptor.Level.BODY
     }
 
     private val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(loggingInterceptor)
+        .connectTimeout(60, TimeUnit.SECONDS)
+        .readTimeout(60, TimeUnit.SECONDS)
+        .writeTimeout(60, TimeUnit.SECONDS)
         .build()
 
     private val retrofit = Retrofit.Builder()
@@ -23,4 +31,8 @@ object RetrofitClient {
         .build()
 
     val quizApiService: QuizApiService = retrofit.create(QuizApiService::class.java)
+    
+    init {
+        Log.d(TAG, "RetrofitClient initialized with BASE_URL: $BASE_URL")
+    }
 } 
