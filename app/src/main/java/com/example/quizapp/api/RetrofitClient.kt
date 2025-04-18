@@ -8,13 +8,17 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
-    private const val BASE_URL = "https://opentdb.com/api.php?amount=50"
+    private const val BASE_URL: String = "https://opentdb.com/"
     private const val TAG = "RetrofitClient"
 
     private val loggingInterceptor = HttpLoggingInterceptor { message ->
         Log.d(TAG, "API Response: $message")
     }.apply {
         level = HttpLoggingInterceptor.Level.BODY
+    }
+
+    fun logInterceptor() {
+        BASE_URL
     }
 
     private val okHttpClient = OkHttpClient.Builder()

@@ -1,7 +1,6 @@
 package com.example.quizapp.ui.quiz
 
 import android.text.Html
-import android.util.Base64
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,7 +9,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.nio.charset.StandardCharsets
 
 data class QuizQuestion(
     val question: String,
@@ -35,24 +33,19 @@ class QuizViewModel : ViewModel() {
         loadQuestions()
     }
 
-    private fun decodeBase64(encodedString: String): String {
-        return try {
-            val decodedBytes = Base64.decode(encodedString, Base64.DEFAULT)
-            String(decodedBytes, StandardCharsets.UTF_8)
-        } catch (e: Exception) {
-            Log.e("QuizViewModel", "Base64 decode hatası", e)
-            encodedString
-        }
-    }
-
     private fun loadQuestions() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             try {
                 Log.d("QuizViewModel", "API çağrısı başlatılıyor...")
                 Log.d("QuizViewModel", "RetrofitClient durumu: ${RetrofitClient.quizApiService}")
+                Log.d("QuizViewModel", "API URL: https://opentdb.com/api.php?amount=50&type=multiple")
                 
-                val response = RetrofitClient.quizApiService.getQuestions(amount = 50)
+                // API'den 50 adet çoktan seçmeli soru al
+                val response = RetrofitClient.quizApiService.getQuestions(
+                    amount = 50,  // 50 soru iste
+                    type = "multiple"  // Çoktan seçmeli soru tipi
+                )
                 Log.d("QuizViewModel", "API yanıtı alındı: ${response.results.size} soru")
                 Log.d("QuizViewModel", "API yanıt detayı: $response")
                 
@@ -67,6 +60,9 @@ class QuizViewModel : ViewModel() {
                 
                 val questions = response.results.map { apiQuestion ->
                     Log.d("QuizViewModel", "Soru işleniyor: ${apiQuestion.question}")
+                    Log.d("QuizViewModel", "Doğru cevap: ${apiQuestion.correct_answer}")
+                    Log.d("QuizViewModel", "Yanlış cevaplar: ${apiQuestion.incorrect_answers}")
+                    
                     QuizQuestion(
                         question = Html.fromHtml(apiQuestion.question, Html.FROM_HTML_MODE_COMPACT).toString(),
                         options = (apiQuestion.incorrect_answers + apiQuestion.correct_answer).shuffled()

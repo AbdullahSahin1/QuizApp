@@ -5,14 +5,11 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface QuizApiService {
-    @GET("https://opentdb.com/api.php?amount=50")
+    @GET("api.php")
     suspend fun getQuestions(
         @Query("amount") amount: Int = 50,
         @Query("type") type: String = "multiple"
-    ): QuizResponse {
-        Log.d("QuizApiService", "getQuestions çağrıldı: amount=$amount, type=$type")
-        return this.getQuestions(amount, type)
-    }
+    ): QuizResponse
 }
 
 data class QuizResponse(
